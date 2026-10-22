@@ -1,0 +1,68 @@
+### model
+# Stage 1 (monologue): from the raw Fun-Audio-Chat-8B
+model_name_or_path: ../pretrained_models/Fun-Audio-Chat-8B
+
+### method
+# trainable: crq_transformer LoRA (JRH) + motion_cfm_head (full FT, carries the mcoeff mean/std buffers)
+# frozen: everything else, incl. the LM (text loss is logged only)
+stage: sft
+do_train: true
+do_eval: true
+finetuning_type: lora
+lora_target: '^audio_invert_tower\.crq_transformer\..*\.(q_proj|k_proj|v_proj|o_proj|gate_proj|up_proj|down_proj)$'
+additional_target: motion_cfm_head
+lora_rank: 16
+lora_alpha: 32
+lora_dropout: 0.05
+flash_attn: fa2
+freeze_vision_tower: false
+freeze_multi_modal_projector: false
+deepspeed: configs/deepspeed/ds_z2_bucket5e7.json
+print_param_status: true
+
+### dataset
+# Talker-T2AV repeat-after-me rows (JAVIS: 940,497 train / 4,697 val), data_prep/build_stage1_rows.py
+dataset: javis_stage1
+template: funaudiochat
+cutoff_len: 2048
+overwrite_cache: false
+preprocessing_num_workers: 32
+preprocessing_batch_size: 10000
+neat_packing: false
+
+### output
+output_dir: saves/stage1
+logging_steps: 10
+save_strategy: steps
+save_steps: 4000
+save_total_limit: 25
+load_best_model_at_end: true
+metric_for_best_model: eval_javis_stage1_val_motion_cfm_loss
+greater_is_better: false
+save_safetensors: false
+plot_loss: true
+overwrite_output_dir: false
+
+### train
+# 1 x 2 x 4 GPUs = global 8; 117,563 steps = one epoch of 940,497 rows (set it to your row count / 8)
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 2
+dataloader_num_workers: 8
+learning_rate: 1.0e-4
+max_steps: 117563
+lr_scheduler_type: cosine_with_min_lr
+lr_scheduler_kwargs: {min_lr_rate: 0.1}
+warmup_ratio: 0.03
+bf16: true
+report_to: none   # wandb: pip install wandb, then report_to=wandb
+run_name: javis-stage1
+ddp_timeout: 180000000
+disable_gradient_checkpointing: false
+
+### eval
+eval_dataset: javis_stage1_val
+eval_on_each_dataset: true
+per_device_eval_batch_size: 1
+eval_strategy: steps
+eval_steps: 4000
+eval_on_start: true

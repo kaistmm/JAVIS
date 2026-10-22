@@ -1,0 +1,14 @@
+### model
+# fold the stage-1 LoRA and motion_cfm_head into a standalone base for stage 2
+# (a new PEFT config stacked on an existing adapter is ignored, so stage 2 must start from a merged export)
+model_name_or_path: ../pretrained_models/Fun-Audio-Chat-8B
+# the run directory holds the best checkpoint (load_best_model_at_end), so no step number is needed
+adapter_name_or_path: saves/stage1
+finetuning_type: lora
+template: funaudiochat
+
+### export
+export_dir: saves/stage1-merged
+export_size: 5
+export_device: auto
+export_legacy_format: false

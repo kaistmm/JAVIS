@@ -1,0 +1,68 @@
+### model
+# Stage 2 (dialogue): from the merged stage-1 export (configs/merge_stage1.yaml)
+model_name_or_path: saves/stage1-merged
+
+### method
+# same trainable set as stage 1: crq_transformer LoRA + motion_cfm_head; LM frozen
+stage: sft
+do_train: true
+do_eval: true
+finetuning_type: lora
+lora_target: '^audio_invert_tower\.crq_transformer\..*\.(q_proj|k_proj|v_proj|o_proj|gate_proj|up_proj|down_proj)$'
+additional_target: motion_cfm_head
+lora_rank: 16
+lora_alpha: 32
+lora_dropout: 0.05
+flash_attn: fa2
+freeze_vision_tower: false
+freeze_multi_modal_projector: false
+deepspeed: configs/deepspeed/ds_z2_bucket5e7.json
+print_param_status: true
+
+### dataset
+# 377,144 Seamless + 141,932 MultiDialog rows = 519,076
+dataset: javis_seamless,javis_multidialog
+template: funaudiochat
+cutoff_len: 2048
+overwrite_cache: false
+preprocessing_num_workers: 32
+preprocessing_batch_size: 10000
+neat_packing: false
+
+### output
+output_dir: saves/stage2
+logging_steps: 10
+save_strategy: steps
+save_steps: 4000
+save_total_limit: 25
+load_best_model_at_end: true
+# JAVIS: best = checkpoint-88000
+metric_for_best_model: eval_javis_seamless_val_motion_cfm_loss
+greater_is_better: false
+save_safetensors: false
+plot_loss: true
+overwrite_output_dir: false
+
+### train
+# 1 x 2 x 4 GPUs = global 8; 64,885 steps = one epoch of 519,076 rows (set it to your row count / 8)
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 2
+dataloader_num_workers: 8
+learning_rate: 1.0e-4
+max_steps: 64885
+lr_scheduler_type: cosine_with_min_lr
+lr_scheduler_kwargs: {min_lr_rate: 0.1}
+warmup_ratio: 0.03
+bf16: true
+report_to: none   # wandb: pip install wandb, then report_to=wandb
+run_name: javis-stage2
+ddp_timeout: 180000000
+disable_gradient_checkpointing: false
+
+### eval
+eval_dataset: javis_seamless_val,javis_multidialog_val
+eval_on_each_dataset: true
+per_device_eval_batch_size: 1
+eval_strategy: steps
+eval_steps: 4000
+eval_on_start: true

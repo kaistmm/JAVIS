@@ -1,0 +1,92 @@
+{
+  "javis_stage1": {
+    "file_name": "../../data/talker/rows/train.jsonl",
+    "formatting": "sharegpt",
+    "columns": {
+      "system": "system",
+      "messages": "messages",
+      "audios": "audio"
+    },
+    "tags": {
+      "role_tag": "role",
+      "content_tag": "content",
+      "user_tag": "user",
+      "assistant_tag": "assistant"
+    }
+  },
+  "javis_stage1_val": {
+    "file_name": "../../data/talker/rows/val.jsonl",
+    "formatting": "sharegpt",
+    "columns": {
+      "system": "system",
+      "messages": "messages",
+      "audios": "audio"
+    },
+    "tags": {
+      "role_tag": "role",
+      "content_tag": "content",
+      "user_tag": "user",
+      "assistant_tag": "assistant"
+    }
+  },
+  "javis_seamless": {
+    "file_name": "../../data/seamless/rows/train.jsonl",
+    "formatting": "sharegpt",
+    "columns": {
+      "system": "system",
+      "messages": "messages",
+      "audios": "audio"
+    },
+    "tags": {
+      "role_tag": "role",
+      "content_tag": "content",
+      "user_tag": "user",
+      "assistant_tag": "assistant"
+    }
+  },
+  "javis_multidialog": {
+    "file_name": "../../data/multidialog/rows/train.jsonl",
+    "formatting": "sharegpt",
+    "columns": {
+      "system": "system",
+      "messages": "messages",
+      "audios": "audio"
+    },
+    "tags": {
+      "role_tag": "role",
+      "content_tag": "content",
+      "user_tag": "user",
+      "assistant_tag": "assistant"
+    }
+  },
+  "javis_seamless_val": {
+    "file_name": "../../data/seamless/rows/val.jsonl",
+    "formatting": "sharegpt",
+    "columns": {
+      "system": "system",
+      "messages": "messages",
+      "audios": "audio"
+    },
+    "tags": {
+      "role_tag": "role",
+      "content_tag": "content",
+      "user_tag": "user",
+      "assistant_tag": "assistant"
+    }
+  },
+  "javis_multidialog_val": {
+    "file_name": "../../data/multidialog/rows/val.jsonl",
+    "formatting": "sharegpt",
+    "columns": {
+      "system": "system",
+      "messages": "messages",
+      "audios": "audio"
+    },
+    "tags": {
+      "role_tag": "role",
+      "content_tag": "content",
+      "user_tag": "user",
+      "assistant_tag": "assistant"
+    }
+  }
+}

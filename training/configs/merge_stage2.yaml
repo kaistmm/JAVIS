@@ -1,0 +1,13 @@
+### model
+# the final model: stage-2 best checkpoint merged into the stage-1 export
+model_name_or_path: saves/stage1-merged
+# the run directory holds the best checkpoint (load_best_model_at_end), so no step number is needed
+adapter_name_or_path: saves/stage2
+finetuning_type: lora
+template: funaudiochat
+
+### export
+export_dir: saves/JAVIS
+export_size: 5
+export_device: auto
+export_legacy_format: false
